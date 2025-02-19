@@ -1,5 +1,5 @@
 name: bus_seat_plan
-description: "A new Flutter package project."
+description: "A Flutter package for managing bus seat layouts and seat selection."
 version: 0.0.1
 homepage:
 
