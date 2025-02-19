@@ -45,16 +45,19 @@ class BusSeatPlanWidget extends StatelessWidget {
       final rowIndex = i + 1;
       final seatPlanChildRow = seatMap[i].split('');
       List<SeatPlanModal?> rowSeats = [];
+      int seatIndexCount = 0;
       for (var a = 0; a < seatPlanChildRow.length; a++) {
         final colIndex = a + 1;
         if (seatPlanChildRow[a] == 's') {
           final rawNumber = "${rowIndex}_$colIndex";
-          final seatLetter = String.fromCharCode(
-              65 + (prefix == "A" ? rowIndex - 1 : colIndex));
+          final firstSeatNo = prefix == 'A'
+              ? String.fromCharCode((65 + i))
+              : ((i + 1) == 13 ? 'J' : i + 1);
+          final secondSeatNo = prefix == 'A'
+              ? (seatIndexCount + 1)
+              : String.fromCharCode((65 + seatIndexCount));
           SeatPlanModal seatPlanModal = SeatPlanModal(
-              seatNo: prefix == "A"
-                  ? '$seatLetter$colIndex'
-                  : '$rowIndex$seatLetter',
+              seatNo: '$firstSeatNo$secondSeatNo',
               rawNo: rawNumber,
               status: SeatStatus.canBuy);
           //checking The Seat Status
@@ -72,6 +75,7 @@ class BusSeatPlanWidget extends StatelessWidget {
             }
           }
           rowSeats.add(seatPlanModal);
+          seatIndexCount++;
         } else {
           rowSeats.add(null);
         }
