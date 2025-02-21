@@ -1,3 +1,10 @@
-## 0.0.1
+## [0.0.1] - Initial Release
+### Added
+- Implemented **Bus Seat Plan Widget** for Flutter.
+- Supports customizable seat layouts.
+- Allows seat selection with dynamic pricing.
+- Responsive design for different screen sizes.
 
-* TODO: Describe initial release.
+## [0.0.2] - 2025-02-21
+### Added
+- Added `maxScreenWidth` to fix UI issues in the Flutter package.

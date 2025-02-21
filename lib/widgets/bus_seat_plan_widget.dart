@@ -10,6 +10,7 @@ class BusSeatPlanWidget extends StatelessWidget {
   final List<String> reserveSeats;
   final List<String> bookingSeats;
   final SeatStatusColor? seatSetusColor;
+  final double? maxScreenWidth;
   final Function(SeatPlanModal)? clickSeat;
   final Function(SeatPlanModal)? callBackSelectedSeatCannotBuy;
   final String prefix;
@@ -25,7 +26,8 @@ class BusSeatPlanWidget extends StatelessWidget {
       this.selectedSeats = const [],
       this.clickSeat,
       this.customTopWidget,
-      this.callBackSelectedSeatCannotBuy});
+      this.callBackSelectedSeatCannotBuy,
+      this.maxScreenWidth});
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +40,10 @@ class BusSeatPlanWidget extends StatelessWidget {
       defineSeatSetusColor = defineSeatSetusColor;
     }
 
-    final screenWidth = MediaQuery.of(context).size.width;
-
+    double screenWidth = MediaQuery.of(context).size.width;
+    if (maxScreenWidth != null && maxScreenWidth! < screenWidth) {
+      screenWidth = maxScreenWidth!;
+    }
     //Formatting and Checking Seats
     for (var i = 0; i < seatMap.length; i++) {
       final rowIndex = i + 1;
