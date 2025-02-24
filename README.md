@@ -66,6 +66,8 @@ BusSeatPlanWidget(
 | `clickSeat` | `Function(SeatPlanModal)?` | Callback when a seat is clicked. |
 | `callBackSelectedSeatCannotBuy` | `Function(SeatPlanModal)?` | Callback when a selected seat cannot be bought. |
 | `customTopWidget` | `Widget Function(int gridCount)?` | Custom widget displayed above the seat layout. |
+| `maxScreenWidth` | `double?` | The maximum width of the seat plan widget. If not provided, it will take the full 
+
 
 ### Seat Status
 | Status | Description |
