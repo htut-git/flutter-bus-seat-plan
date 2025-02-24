@@ -20,8 +20,8 @@ dependencies:
 
 
 ### Sample Images
-![Seat Plan](https://raw.githubusercontent.com/htut-git/flutter-bus-seat-plan/main/docs/seat_plan2_2.png)
-![Seat Plan](https://raw.githubusercontent.com/htut-git/flutter-bus-seat-plan/main/docs/seat_plan2_1.png)
+![Seat Plan](https://github.com/htut-git/flutter-bus-seat-plan/blob/main/assets/images/seat_plan2_1.png?raw=true)
+![Seat Plan](https://github.com/htut-git/flutter-bus-seat-plan/blob/main/assets/images/seat_plan2_2.png?raw=true)
 
 ### Usage
 ```dart
