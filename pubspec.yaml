@@ -1,7 +1,9 @@
 name: bus_seat_plan
 description: "A Flutter package for managing bus seat layouts and seat selection."
-version: 0.0.2
-homepage:
+version: 0.0.3
+homepage: https://github.com/htut-git/flutter-bus-seat-plan  # Your GitHub Repo
+repository: https://github.com/htut-git/flutter-bus-seat-plan  # Shows on pub.dev
+issue_tracker: https://github.com/htut-git/flutter-bus-seat-plan/issues  # Bug reports
 
 environment:
   sdk: ^3.6.1
@@ -24,3 +26,11 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/
+
+platforms:
+  android:
+  ios:
+  macos:
+  web:
+  linux:
+  windows:

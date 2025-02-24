@@ -18,6 +18,11 @@ dependencies:
   bus_seat_plan:
 ```
 
+
+### Sample Images
+![Seat Plan](https://raw.githubusercontent.com/htut-git/flutter-bus-seat-plan/main/docs/seat_plan2_2.png)
+![Seat Plan](https://raw.githubusercontent.com/htut-git/flutter-bus-seat-plan/main/docs/seat_plan2_1.png)
+
 ### Usage
 ```dart
 BusSeatPlanWidget(
@@ -56,7 +61,7 @@ BusSeatPlanWidget(
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `seatMap` | `List<String>` | Defines the seat layout using `s` for seats and spaces for aisles. |
-| `prefix` | `String` | Prefix for seat numbering (e.g., 'A'). Default is 'A'. |
+| `prefix` | `String` | Prefix for seat numbering (e.g., 'A' or 'A-2'). Default is 'A'. |
 | `bookedSeats` | `List<BookedSeatModal>` | List of booked seats with custom icons. |
 | `blockedSeats` | `List<String>` | List of blocked seats (cannot be selected). |
 | `reserveSeats` | `List<String>` | List of reserved seats. |

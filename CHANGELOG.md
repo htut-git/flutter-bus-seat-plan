@@ -5,6 +5,6 @@
 - Allows seat selection with dynamic pricing.
 - Responsive design for different screen sizes.
 
-## [0.0.2] - 2025-02-21
+## [0.0.3] - 2025-02-21
 ### Added
 - Added `maxScreenWidth` to fix UI issues in the Flutter package.
