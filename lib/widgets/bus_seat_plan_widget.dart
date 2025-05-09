@@ -9,35 +9,38 @@ class BusSeatPlanWidget extends StatelessWidget {
   final List<String> blockedSeats;
   final List<String> reserveSeats;
   final List<String> bookingSeats;
-  final SeatStatusColor? seatSetusColor;
+  final SeatStatusColor? seatStatusColor;
   final double? maxScreenWidth;
   final Function(SeatPlanModal)? clickSeat;
   final Function(SeatPlanModal)? callBackSelectedSeatCannotBuy;
   final String prefix;
-  const BusSeatPlanWidget(
-      {super.key,
+  final Function(int row, int col) seatNoBuilder;
+  const BusSeatPlanWidget({
+      super.key,
       required this.seatMap,
       this.prefix = 'A',
       this.bookedSeats = const [],
       this.blockedSeats = const [],
       this.reserveSeats = const [],
       this.bookingSeats = const [],
-      this.seatSetusColor,
+      this.seatStatusColor,
       this.selectedSeats = const [],
       this.clickSeat,
       this.customTopWidget,
       this.callBackSelectedSeatCannotBuy,
-      this.maxScreenWidth});
+      this.maxScreenWidth,
+      required this.seatNoBuilder,
+    });
 
   @override
   Widget build(BuildContext context) {
     List<List<List<SeatPlanModal?>>> formattedSeatPlan =
         <List<List<SeatPlanModal?>>>[];
 
-    SeatStatusColor defineSeatSetusColor = SeatStatusColor();
+    SeatStatusColor defineseatStatusColor = SeatStatusColor();
 
-    if (seatSetusColor != null) {
-      defineSeatSetusColor = defineSeatSetusColor;
+    if (seatStatusColor != null) {
+      defineseatStatusColor = defineseatStatusColor;
     }
 
     double screenWidth = MediaQuery.of(context).size.width;
@@ -54,14 +57,11 @@ class BusSeatPlanWidget extends StatelessWidget {
         final colIndex = a + 1;
         if (seatPlanChildRow[a] == 's') {
           final rawNumber = "${rowIndex}_$colIndex";
-          final firstSeatNo = prefix == 'A'
-              ? String.fromCharCode((65 + i))
-              : ((i + 1) == 13 ? 'J' : i + 1);
-          final secondSeatNo = prefix == 'A'
-              ? (seatIndexCount + 1)
-              : String.fromCharCode((65 + seatIndexCount));
+          
+          String seatNo = seatNoBuilder(rowIndex, colIndex);
+
           SeatPlanModal seatPlanModal = SeatPlanModal(
-              seatNo: '$firstSeatNo$secondSeatNo',
+              seatNo: seatNo,
               rawNo: rawNumber,
               status: SeatStatus.canBuy);
           //checking The Seat Status
@@ -109,17 +109,17 @@ class BusSeatPlanWidget extends StatelessWidget {
               color: (() {
                 switch (seatPlan.status) {
                   case SeatStatus.booked:
-                    return defineSeatSetusColor.bookedColor;
+                    return defineseatStatusColor.bookedColor;
                   case SeatStatus.blocked:
-                    return defineSeatSetusColor.blockColor;
+                    return defineseatStatusColor.blockColor;
                   case SeatStatus.reserved:
-                    return defineSeatSetusColor.reserveColor;
+                    return defineseatStatusColor.reserveColor;
                   case SeatStatus.booking:
-                    return defineSeatSetusColor.bookingColor;
+                    return defineseatStatusColor.bookingColor;
                   case SeatStatus.canBuy:
                     return selectedSeats.contains(seatPlan)
-                        ? defineSeatSetusColor.selectedColor
-                        : defineSeatSetusColor.canBuyColor;
+                        ? defineseatStatusColor.selectedColor
+                        : defineseatStatusColor.canBuyColor;
                 }
               })(),
               borderRadius: BorderRadius.circular(8),
