@@ -11,7 +11,7 @@
 
 ## [1.0.0] - 2025-05-11
 ### Added
-- Made `seatNos` customizable using the new `seatNoBuilder` parameter in `BusSeatPlanWidget`.
+- Made seat number customizable using the new `seatNoBuilder` parameter in `BusSeatPlanWidget`.
   - Developers can now define custom seat labels dynamically based on row, column, and prefix.
 
 ### Fixed

@@ -16,26 +16,25 @@ class BusSeatPlanWidget extends StatelessWidget {
   final String prefix;
   final Function(int row, int col) seatNoBuilder;
   const BusSeatPlanWidget({
-      super.key,
-      required this.seatMap,
-      this.prefix = 'A',
-      this.bookedSeats = const [],
-      this.blockedSeats = const [],
-      this.reserveSeats = const [],
-      this.bookingSeats = const [],
-      this.seatStatusColor,
-      this.selectedSeats = const [],
-      this.clickSeat,
-      this.customTopWidget,
-      this.callBackSelectedSeatCannotBuy,
-      this.maxScreenWidth,
-      required this.seatNoBuilder,
-    });
+    super.key,
+    required this.seatMap,
+    this.prefix = 'A',
+    this.bookedSeats = const [],
+    this.blockedSeats = const [],
+    this.reserveSeats = const [],
+    this.bookingSeats = const [],
+    this.seatStatusColor,
+    this.selectedSeats = const [],
+    this.clickSeat,
+    this.customTopWidget,
+    this.callBackSelectedSeatCannotBuy,
+    this.maxScreenWidth,
+    required this.seatNoBuilder,
+  });
 
   @override
   Widget build(BuildContext context) {
-    List<List<List<SeatPlanModal?>>> formattedSeatPlan =
-        <List<List<SeatPlanModal?>>>[];
+    List<List<List<SeatPlanModal?>>> formattedSeatPlan = <List<List<SeatPlanModal?>>>[];
 
     SeatStatusColor defineseatStatusColor = SeatStatusColor();
 
@@ -52,18 +51,15 @@ class BusSeatPlanWidget extends StatelessWidget {
       final rowIndex = i + 1;
       final seatPlanChildRow = seatMap[i].split('');
       List<SeatPlanModal?> rowSeats = [];
-      int seatIndexCount = 0;
       for (var a = 0; a < seatPlanChildRow.length; a++) {
         final colIndex = a + 1;
         if (seatPlanChildRow[a] == 's') {
           final rawNumber = "${rowIndex}_$colIndex";
-          
+
           String seatNo = seatNoBuilder(rowIndex, colIndex);
 
-          SeatPlanModal seatPlanModal = SeatPlanModal(
-              seatNo: seatNo,
-              rawNo: rawNumber,
-              status: SeatStatus.canBuy);
+          SeatPlanModal seatPlanModal =
+              SeatPlanModal(seatNo: seatNo, rawNo: rawNumber, status: SeatStatus.canBuy);
           //checking The Seat Status
           if (blockedSeats.contains(rawNumber)) {
             seatPlanModal.status = SeatStatus.blocked;
@@ -79,7 +75,6 @@ class BusSeatPlanWidget extends StatelessWidget {
             }
           }
           rowSeats.add(seatPlanModal);
-          seatIndexCount++;
         } else {
           rowSeats.add(null);
         }
@@ -88,8 +83,7 @@ class BusSeatPlanWidget extends StatelessWidget {
     }
 
     Widget seatLayout(SeatPlanModal seatPlan, int totalLength) {
-      if (seatPlan.status != SeatStatus.canBuy &&
-          selectedSeats.contains(seatPlan)) {
+      if (seatPlan.status != SeatStatus.canBuy && selectedSeats.contains(seatPlan)) {
         WidgetsBinding.instance.addPersistentFrameCallback((_) {
           if (callBackSelectedSeatCannotBuy != null) {
             callBackSelectedSeatCannotBuy!(seatPlan);
@@ -131,8 +125,7 @@ class BusSeatPlanWidget extends StatelessWidget {
                 ? seatPlan.icon
                 : Text(
                     seatPlan.seatNo,
-                    style: const TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                   ),
           ),
         ),
@@ -163,9 +156,7 @@ class BusSeatPlanWidget extends StatelessWidget {
                       ? seatLayout(seatPlan, seatPlanChildRow.length)
                       : Padding(
                           padding: EdgeInsets.all(3),
-                          child: SizedBox(
-                              width: screenWidth /
-                                  (seatPlanChildRow.length + 3.5)),
+                          child: SizedBox(width: screenWidth / (seatPlanChildRow.length + 3.5)),
                         ),
                 SizedBox(width: 30),
               ],
