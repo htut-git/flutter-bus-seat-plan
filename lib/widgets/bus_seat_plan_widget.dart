@@ -1,20 +1,18 @@
 import 'package:bus_seat_plan/bus_seat_plan.dart';
 import 'package:flutter/material.dart';
 
-class BusSeatPlanWidget extends StatelessWidget {
+class BusSeatPlanWidget extends StatefulWidget {
   final Widget Function(int gridCount)? customTopWidget;
   final List<SeatPlanModal> selectedSeats;
   final List<String> seatMap;
-  final List<BookedSeatModal> bookedSeats;
+  final List<SeatPlanModal> bookedSeats;
   final List<String> blockedSeats;
   final List<String> reserveSeats;
   final List<String> bookingSeats;
   final SeatStatusColor? seatStatusColor;
   final double? maxScreenWidth;
   final Function(SeatPlanModal)? clickSeat;
-  final Function(SeatPlanModal)? callBackSelectedSeatCannotBuy;
   final String prefix;
-  final Function(int row, int col) seatNoBuilder;
   const BusSeatPlanWidget({
     super.key,
     required this.seatMap,
@@ -27,75 +25,91 @@ class BusSeatPlanWidget extends StatelessWidget {
     this.selectedSeats = const [],
     this.clickSeat,
     this.customTopWidget,
-    this.callBackSelectedSeatCannotBuy,
     this.maxScreenWidth,
-    required this.seatNoBuilder,
   });
 
   @override
-  Widget build(BuildContext context) {
-    List<List<List<SeatPlanModal?>>> formattedSeatPlan = <List<List<SeatPlanModal?>>>[];
+  State<BusSeatPlanWidget> createState() => _BusSeatPlanWidgetState();
+}
 
-    SeatStatusColor defineseatStatusColor = SeatStatusColor();
+class _BusSeatPlanWidgetState extends State<BusSeatPlanWidget> {
+  List<List<SeatPlanModal?>> formattedSeatPlan = [];
 
-    if (seatStatusColor != null) {
-      defineseatStatusColor = defineseatStatusColor;
+  @override
+  void initState() {
+    super.initState();
+    _generateSeatPlan();
+  }
+
+  @override
+  void didUpdateWidget(covariant BusSeatPlanWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.seatMap != oldWidget.seatMap ||
+        widget.bookedSeats != oldWidget.bookedSeats ||
+        widget.blockedSeats != oldWidget.blockedSeats ||
+        widget.reserveSeats != oldWidget.reserveSeats ||
+        widget.bookingSeats != oldWidget.bookingSeats) {
+      _generateSeatPlan();
     }
+  }
 
-    double screenWidth = MediaQuery.of(context).size.width;
-    if (maxScreenWidth != null && maxScreenWidth! < screenWidth) {
-      screenWidth = maxScreenWidth!;
-    }
-    //Formatting and Checking Seats
-    for (var i = 0; i < seatMap.length; i++) {
+  void _generateSeatPlan() {
+    formattedSeatPlan = [];
+    int seatCount = 0;
+    final bookedSeatsMap = {for (var seat in widget.bookedSeats) seat.id: seat};
+    for (var i = 0; i < widget.seatMap.length; i++) {
       final rowIndex = i + 1;
-      final seatPlanChildRow = seatMap[i].split('');
+      final seatPlanChildRow = widget.seatMap[i].split('');
       List<SeatPlanModal?> rowSeats = [];
       for (var a = 0; a < seatPlanChildRow.length; a++) {
         final colIndex = a + 1;
         if (seatPlanChildRow[a] == 's') {
-          final rawNumber = "${rowIndex}_$colIndex";
+          seatCount++;
+          final id = "${rowIndex}_$colIndex";
+          String seatNo = "${widget.prefix}$seatCount";
+          SeatPlanModal seatPlanModal = SeatPlanModal(seatNumber: seatNo, id: id, status: SeatStatus.canBuy);
 
-          String seatNo = seatNoBuilder(rowIndex, colIndex);
-
-          SeatPlanModal seatPlanModal =
-              SeatPlanModal(seatNo: seatNo, rawNo: rawNumber, status: SeatStatus.canBuy);
-          //checking The Seat Status
-          if (blockedSeats.contains(rawNumber)) {
+          if (widget.blockedSeats.contains(id)) {
             seatPlanModal.status = SeatStatus.blocked;
-          } else if (reserveSeats.contains(rawNumber)) {
+          } else if (widget.reserveSeats.contains(id)) {
             seatPlanModal.status = SeatStatus.reserved;
-          } else if (bookingSeats.contains(rawNumber)) {
+          } else if (widget.bookingSeats.contains(id)) {
             seatPlanModal.status = SeatStatus.booking;
           }
-          for (var bookSeat in bookedSeats) {
-            if (bookSeat.rawIds.contains(rawNumber)) {
-              seatPlanModal.status = SeatStatus.booked;
-              seatPlanModal.icon = bookSeat.icon;
-            }
+
+          if (bookedSeatsMap.containsKey(id)) {
+            final bookSeat = bookedSeatsMap[id]!;
+            seatPlanModal = SeatPlanModal(
+              seatNumber: seatNo,
+              id: id,
+              status: SeatStatus.booked,
+              icon: bookSeat.icon,
+            );
           }
           rowSeats.add(seatPlanModal);
         } else {
           rowSeats.add(null);
         }
       }
-      formattedSeatPlan.add([rowSeats]);
+      formattedSeatPlan.add(rowSeats);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    SeatStatusColor defineseatStatusColor = widget.seatStatusColor ?? SeatStatusColor();
+    double screenWidth = MediaQuery.of(context).size.width;
+    if (widget.maxScreenWidth != null && widget.maxScreenWidth! < screenWidth) {
+      screenWidth = widget.maxScreenWidth!;
     }
 
     Widget seatLayout(SeatPlanModal seatPlan, int totalLength) {
-      if (seatPlan.status != SeatStatus.canBuy && selectedSeats.contains(seatPlan)) {
-        WidgetsBinding.instance.addPersistentFrameCallback((_) {
-          if (callBackSelectedSeatCannotBuy != null) {
-            callBackSelectedSeatCannotBuy!(seatPlan);
-          }
-        });
-      }
       return Padding(
-        padding: EdgeInsets.all(3),
+        padding: const EdgeInsets.all(3),
         child: InkWell(
-          onTap: clickSeat != null
+          onTap: widget.clickSeat != null
               ? () {
-                  clickSeat!(seatPlan);
+                  widget.clickSeat!(seatPlan);
                 }
               : null,
           child: Container(
@@ -111,7 +125,7 @@ class BusSeatPlanWidget extends StatelessWidget {
                   case SeatStatus.booking:
                     return defineseatStatusColor.bookingColor;
                   case SeatStatus.canBuy:
-                    return selectedSeats.contains(seatPlan)
+                    return widget.selectedSeats.contains(seatPlan)
                         ? defineseatStatusColor.selectedColor
                         : defineseatStatusColor.canBuyColor;
                 }
@@ -122,9 +136,9 @@ class BusSeatPlanWidget extends StatelessWidget {
             width: screenWidth / (totalLength + 3.5),
             height: screenWidth / (totalLength + 3.5),
             child: seatPlan.status == SeatStatus.booked
-                ? seatPlan.icon
+                ? seatPlan.icon ?? const SizedBox.shrink()
                 : Text(
-                    seatPlan.seatNo,
+                    seatPlan.seatNumber,
                     style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                   ),
           ),
@@ -133,34 +147,33 @@ class BusSeatPlanWidget extends StatelessWidget {
     }
 
     if (formattedSeatPlan.isEmpty) {
-      return Text('SeatPlan Not Found');
+      return const Text('SeatPlan Not Found');
     }
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        customTopWidget!(formattedSeatPlan.first.first.length),
+        if (widget.customTopWidget != null) widget.customTopWidget!(formattedSeatPlan.first.length),
         for (var i = 0; i < formattedSeatPlan.length; i++)
-          for (var seatPlanChildRow in formattedSeatPlan[i])
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                    width: 30,
-                    child: Text(
-                      (i + 1).toString(),
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    )),
-                for (var seatPlan in seatPlanChildRow)
-                  seatPlan is SeatPlanModal
-                      ? seatLayout(seatPlan, seatPlanChildRow.length)
-                      : Padding(
-                          padding: EdgeInsets.all(3),
-                          child: SizedBox(width: screenWidth / (seatPlanChildRow.length + 3.5)),
-                        ),
-                SizedBox(width: 30),
-              ],
-            )
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                  width: 30,
+                  child: Text(
+                    (i + 1).toString(),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  )),
+              for (var seatPlan in formattedSeatPlan[i])
+                seatPlan is SeatPlanModal
+                    ? seatLayout(seatPlan, formattedSeatPlan[i].length)
+                    : Padding(
+                        padding: const EdgeInsets.all(3),
+                        child: SizedBox(width: screenWidth / (formattedSeatPlan[i].length + 3.5)),
+                      ),
+              const SizedBox(width: 30),
+            ],
+          )
       ],
     );
   }
