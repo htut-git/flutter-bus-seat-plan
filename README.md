@@ -1,98 +1,107 @@
-## BusSeatPlanWidget
+# Bus Seat Plan
 
-`BusSeatPlanWidget` is a customizable Flutter widget for displaying and interacting with a bus seat plan. It allows users to view, select, and manage seat bookings with various seat statuses.
+A Flutter package for managing bus seat layouts and seat selection.
 
-### Features
-- Customizable seat layout based on a provided seat map.
-- Supports different seat statuses: available, booked, blocked, reserved, and in progress.
-- Allows seat selection with a callback function.
-- Displays custom icons for booked seats.
-- Option to add a custom widget at the top.
+## Features
 
-### Installation
-Ensure you have the necessary dependencies in your `pubspec.yaml`:
+- **Customizable Seat Layout**: Define your bus layout with a simple `List<String>`.
+- **Seat Statuses**: Supports various seat statuses like available, booked, reserved, and disabled.
+- **Callbacks**: Get notified when a seat is selected.
+- **Customization**: Customize seat colors and add custom widgets.
+
+## Installation
+
+Add this to your `pubspec.yaml`:
+
 ```yaml
 dependencies:
-  flutter:
-    sdk: flutter
-  bus_seat_plan:
+  bus_seat_plan: ^1.0.0
 ```
 
+Then, run `flutter pub get`.
 
-### Sample Images
-![Seat Plan](https://github.com/htut-git/flutter-bus-seat-plan/blob/main/assets/images/seat_plan2_1.png?raw=true)
-![Seat Plan](https://github.com/htut-git/flutter-bus-seat-plan/blob/main/assets/images/seat_plan2_2.png?raw=true)
+## Usage
 
-### Usage
+Here's a simple example of how to use the `BusSeatPlanWidget`:
+
 ```dart
-BusSeatPlanWidget(
-  seatMap: [
-    "ss_ss", 
-    "ss_ss", 
-    "ss_ss"
-  ],
-  prefix: 'A',
-  bookedSeats: [
-    BookedSeatModal(rawIds: ["1_1"], icon: Icon(Icons.check, color: Colors.white)),
-  ],
-  blockedSeats: ["1_2"],
-  reserveSeats: ["2_1"],
-  bookingSeats: ["2_2"],
-  selectedSeats: [],
-  seatSetusColor: SeatStatusColor(
-    bookedColor: Colors.red,
-    blockColor: Colors.grey,
-    reserveColor: Colors.orange,
-    bookingColor: Colors.blue,
-    canBuyColor: Colors.green,
-    selectedColor: Colors.yellow,
-  ),
-  clickSeat: (seat) {
-    print("Seat clicked: \${seat.seatNo}");
-  },
-  callBackSelectedSeatCannotBuy: (seat) {
-    print("Cannot buy seat: \${seat.seatNo}");
-  },
-  customTopWidget: (gridCount) => Text("Bus Seat Layout"),
-)
+import 'package:flutter/material.dart';
+import 'package:bus_seat_plan/bus_seat_plan.dart';
+
+class SeatPlanScreen extends StatefulWidget {
+  const SeatPlanScreen({super.key});
+
+  @override
+  State<SeatPlanScreen> createState() => _SeatPlanScreenState();
+}
+
+class _SeatPlanScreenState extends State<SeatPlanScreen> {
+  final List<Seat> _selectedSeats = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Bus Seat Plan'),
+      ),
+      body: BusSeatPlanWidget(
+        seatMap: const [
+          'ss_ss',
+          'ss_ss',
+          'ss__ss',
+        ],
+        onSeatSelect: (seat) {
+          setState(() {
+            if (_selectedSeats.contains(seat)) {
+              _selectedSeats.remove(seat);
+            } else {
+              _selectedSeats.add(seat);
+            }
+          });
+        },
+        seatNoBuilder: (row, col) {
+          return 'S$row-$col';
+        },
+        selectedSeats: _selectedSeats,
+        bookedSeats: [
+          BookedSeat(
+            rawIds: ['1_1'],
+            icon: const Icon(Icons.person, color: Colors.white),
+          ),
+        ],
+        reservedSeats: const ['1_2'],
+        disabledSeats: const ['1_4'],
+      ),
+    );
+  }
+}
 ```
 
-### Parameters
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `seatMap` | `List<String>` | Defines the seat layout using `s` for seats and spaces for aisles. |
-| `prefix` | `String` | Prefix for seat numbering (e.g., 'A' or 'A-2'). Default is 'A'. |
-| `bookedSeats` | `List<BookedSeatModal>` | List of booked seats with custom icons. |
-| `blockedSeats` | `List<String>` | List of blocked seats (cannot be selected). |
-| `reserveSeats` | `List<String>` | List of reserved seats. |
-| `bookingSeats` | `List<String>` | List of seats currently in booking. |
-| `selectedSeats` | `List<SeatPlanModal>` | List of seats selected by the user. |
-| `seatSetusColor` | `SeatStatusColor?` | Custom seat colors based on status. |
-| `clickSeat` | `Function(SeatPlanModal)?` | Callback when a seat is clicked. |
-| `callBackSelectedSeatCannotBuy` | `Function(SeatPlanModal)?` | Callback when a selected seat cannot be bought. |
-| `customTopWidget` | `Widget Function(int gridCount)?` | Custom widget displayed above the seat layout. |
-| `maxScreenWidth` | `double?` | The maximum width of the seat plan widget. If not provided, it will take the full 
+## Parameters
 
+| Parameter       | Type                       | Description                                                  |
+| --------------- | -------------------------- | ------------------------------------------------------------ |
+| `seatMap`       | `List<String>`             | **Required.** The layout of the seats. `s` for a seat, `_` for an empty space. |
+| `onSeatSelect`  | `ValueChanged<Seat>`       | **Required.** Callback function when a seat is tapped.         |
+| `seatNoBuilder` | `String Function(int, int)` | **Required.** A function to build the seat number from its row and column. |
+| `selectedSeats` | `List<Seat>`               | A list of currently selected seats.                          |
+| `bookedSeats`   | `List<BookedSeat>`         | A list of seats that are already booked.                     |
+| `reservedSeats` | `List<String>`             | A list of seats that are reserved.                           |
+| `disabledSeats` | `List<String>`             | A list of seats that are disabled.                           |
+| `seatStatusColor`| `SeatStatusColor`         | The colors for different seat statuses.                      |
+| `customTopWidget`| `Widget Function(int)`     | A widget to display at the top of the seat plan.             |
+| `maxScreenWidth`| `double`                   | The maximum width of the seat plan.                          |
 
-### Seat Status
-| Status | Description |
-|--------|-------------|
-| `SeatStatus.canBuy` | The seat is available for selection. |
-| `SeatStatus.booked` | The seat is booked and cannot be selected. |
-| `SeatStatus.blocked` | The seat is blocked and cannot be selected. |
-| `SeatStatus.reserved` | The seat is reserved. |
-| `SeatStatus.booking` | The seat is in the process of being booked. |
+## Seat Status
 
-### Example Seat Map
-```dart
-List<String> seatMap = [
-  "ss__ss", // Row 1
-  "ss__ss", // Row 2
-  "ss__ss"  // Row 3
-];
-```
-- `s` represents a seat.
-- `_` represents an aisle space.
+| Status      | Description                               |
+| ----------- | ----------------------------------------- |
+| `available` | The seat is available for selection.      |
+| `booked`    | The seat is already booked.               |
+| `reserved`  | The seat is reserved.                     |
+| `disabled`  | The seat is disabled and cannot be selected. |
+| `selected`  | The seat is currently selected.           |
 
-### License
-This project is licensed under the MIT License.
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
