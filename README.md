@@ -15,7 +15,7 @@ Add this to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  bus_seat_plan: ^1.0.0
+  bus_seat_plan: ^2.0.0
 ```
 
 Then, run `flutter pub get`.
