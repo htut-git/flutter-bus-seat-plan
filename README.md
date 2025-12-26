@@ -20,6 +20,10 @@ dependencies:
 
 Then, run `flutter pub get`.
 
+### Sample Images
+![Seat Plan](https://github.com/htut-git/flutter-bus-seat-plan/blob/main/assets/images/seat_plan2_1.png?raw=true)
+![Seat Plan](https://github.com/htut-git/flutter-bus-seat-plan/blob/main/assets/images/seat_plan2_2.png?raw=true)
+
 ## Usage
 
 Here's a simple example of how to use the `BusSeatPlanWidget`:
