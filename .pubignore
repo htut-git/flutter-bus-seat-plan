@@ -1,0 +1,12 @@
+build/
+.dart_tool/
+.idea/
+*.iml
+example/android/
+example/ios/
+example/windows/
+example/linux/
+example/macos/
+example/web/
+example/build/
+example/.dart_tool/
