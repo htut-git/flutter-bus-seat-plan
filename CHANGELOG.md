@@ -1,3 +1,23 @@
+## [3.0.0] - ARCHITECTURAL OVERHAUL & PREMIUM UI
+
+Version 3.0 is a complete reimagining of the package with a cleaner, highly maintainable architecture, simplified public API, high-performance vector rendering, reactive controller state management, and modern aesthetic themes.
+
+### ✨ Highlights
+- **Simplified Public API**: Common usage requires only `BusSeatPlan(seatLayout: layout, onSeatTap: (seat) {})`.
+- **Clean V3 Architecture**:
+  - `models/`: Immutable `Seat`, `SeatLayout`, `DeckLayout`, `LegendItem`, `SeatStatus`, `SeatType`.
+  - `controllers/`: `SeatPlanController` for granular updates, max seat limits, and dynamic status overrides without rebuilding the entire tree.
+  - `themes/`: `BusSeatThemeData` with built-in presets (`light`, `dark`, `luxury`, `emerald`) and customizable `SeatStyle`.
+  - `painters/`: Vector rendering for ergonomic seats, sleeper bunks, steering wheels, and aerodynamic bus chassis frames.
+  - `widgets/`: `BusSeatPlan`, `BusSeatWidget`, `BusLegendWidget`, `BusDriverWidget`, `BusChassisContainer`.
+  - `utils/`: `LayoutParser` and `SeatExtensions`.
+- **Different Seat Types**: First-class support for `standard`, `semiSleeper`, `sleeper`, and `vip` seats.
+- **Seat Statuses**: `available`, `selected`, `booked`, `reserved`, `disabled`, and `femaleOnly`.
+- **Double Decker & Multi-Deck Support**: Smooth animated deck switching between lower and upper decks.
+- **Interactive Features**: Micro-animations on selection, pinch-to-zoom & pan (`enableInteractiveViewer`), and custom builders (`seatBuilder`, `driverBuilder`, `legendBuilder`).
+- **Showcase Example App**: Standalone interactive playground located in `example/`.
+- **Backward Compatibility**: Retained compatibility adapters for legacy v2 apps.
+
 ## [2.0.0] - MAJOR REFACTOR
 This release is a complete overhaul of the package, introducing a more robust, intuitive, and maintainable API.
 
