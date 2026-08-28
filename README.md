@@ -5,6 +5,10 @@ A high-performance, modern, and highly customizable Flutter package for renderin
 [![Pub Version](https://img.shields.io/pub/v/bus_seat_plan.svg)](https://pub.dev/packages/bus_seat_plan)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
+<div align="center">
+  <img src="assets/images/seat_plan3_preview.png" alt="Bus Seat Plan v3 Preview" width="800"/>
+</div>
+
 ---
 
 ## ✨ Features
